@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\TypeContractor\TypeContractor.csproj" />
+		<ProjectReference Include="..\TypeContractor.Tool\TypeContractor.Tool.csproj" />
 	</ItemGroup>
 
 </Project>

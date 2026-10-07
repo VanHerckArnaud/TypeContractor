@@ -67,8 +67,8 @@ var constantOptions = new Option<string[]>("--generate-constants")
 
 var packsOptions = new Option<string>("--packs-path")
 {
-	DefaultValueFactory = (arg) => config.GetStringWithFallback("packs-path", @"C:\Program Files\dotnet\packs\"),
-	Description = "Path where dotnet is installed and reference assemblies can be found.",
+	DefaultValueFactory = (arg) => config.GetStringWithFallback("packs-path", ReflectionContextHelper.GetDefaultPacksPath()),
+	Description = "Path where dotnet reference packs can be found. Defaults to the packs folder of the active .NET installation.",
 };
 
 var dotnetVersionOptions = new Option<int>("--dotnet-version")
