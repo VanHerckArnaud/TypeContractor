@@ -106,6 +106,12 @@ var casingOptions = new Option<Casing>("--casing")
 	Description = "Casing to use for generated file names",
 };
 
+var lineEndingsOptions = new Option<LineEndings>("--line-endings")
+{
+	DefaultValueFactory = (arg) => config.GetEnum("line-endings", LineEndings.Crlf),
+	Description = "Line endings to use in generated files. Either 'crlf' (default) or 'lf'",
+};
+
 rootCommand.Options.Add(assemblyOption);
 rootCommand.Options.Add(extraAssemblyOptions);
 rootCommand.Options.Add(outputOption);
@@ -122,6 +128,7 @@ rootCommand.Options.Add(buildZodSchemasOptions);
 rootCommand.Options.Add(generateApiClientsOptions);
 rootCommand.Options.Add(apiClientsTemplateOptions);
 rootCommand.Options.Add(casingOptions);
+rootCommand.Options.Add(lineEndingsOptions);
 
 apiClientsTemplateOptions.Validators.Add(result =>
 {
@@ -161,6 +168,7 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
 	var generateApiClientsValue = parseResult.GetValue(generateApiClientsOptions);
 	var apiClientsTemplateValue = parseResult.GetValue(apiClientsTemplateOptions)!;
 	var casingValue = parseResult.GetValue(casingOptions);
+	var lineEndingsValue = parseResult.GetValue(lineEndingsOptions);
 
 	Log.Instance = new ConsoleLogger(logLevelValue);
 	var generator = new Generator(assemblyOptionValue,
@@ -177,7 +185,8 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
 								  buildZodSchemasValue,
 								  generateApiClientsValue,
 								  apiClientsTemplateValue,
-								  casingValue);
+								  casingValue,
+								  lineEndingsValue);
 
 	return await generator.Execute(cancellationToken);
 });

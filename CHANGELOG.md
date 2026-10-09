@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `line-endings` option (`--line-endings`) to choose between `crlf` (default) and `lf` in generated files
+
+### Fixed
+
+- Generated files no longer mix CRLF and LF line endings on macOS and Linux
+
 ## [0.22.1] - 2026-08-23
 
 ### Fixed

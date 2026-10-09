@@ -9,7 +9,7 @@ using TypeContractor.Templates;
 
 namespace TypeContractor.TypeScript;
 
-public partial class ApiClientWriter(string outputPath, string? relativeRoot)
+public partial class ApiClientWriter(string outputPath, string? relativeRoot, LineEndings lineEndings = LineEndings.Crlf)
 {
 	private static readonly Encoding _utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 	private static readonly Dictionary<EndpointMethod, string> _httpMethods = new()
@@ -165,7 +165,7 @@ public partial class ApiClientWriter(string outputPath, string? relativeRoot)
 			Directory.CreateDirectory(directory);
 
 		// Write file
-		File.WriteAllText(filePath, result.Trim() + Environment.NewLine, _utf8WithoutBom);
+		File.WriteAllText(filePath, LineEndingHelpers.NormalizeLineEndings(result.Trim(), lineEndings) + lineEndings.ToNewLine(), _utf8WithoutBom);
 
 		// Return the path we wrote to
 		return filePath;

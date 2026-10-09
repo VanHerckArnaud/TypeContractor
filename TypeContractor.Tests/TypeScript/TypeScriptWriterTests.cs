@@ -50,6 +50,43 @@ public class TypeScriptWriterTests : IDisposable
 	}
 
 	[Fact]
+	public void Defaults_To_Crlf_Line_Endings()
+	{
+		// Arrange
+		var outputTypes = BuildOutputTypes(typeof(SimpleTypes));
+
+		// Act
+		var result = Sut.Write(outputTypes.First(), outputTypes, true);
+
+		// Assert
+		var text = File.ReadAllText(result);
+		text.Should().Contain("\r\n");
+		text.Replace("\r\n", "", StringComparison.Ordinal).Should()
+			.NotContain("\r")
+			.And.NotContain("\n");
+	}
+
+	[Theory]
+	[InlineData(LineEndings.Crlf, "\r\n")]
+	[InlineData(LineEndings.Lf, "\n")]
+	public void Uses_Configured_Line_Endings(LineEndings lineEndings, string newLine)
+	{
+		// Arrange
+		var outputTypes = BuildOutputTypes(typeof(SimpleTypes));
+		var sut = new TypeScriptWriter(_configuration.OutputPath, lineEndings);
+
+		// Act
+		var result = sut.Write(outputTypes.First(), outputTypes, true);
+
+		// Assert
+		var text = File.ReadAllText(result);
+		text.Should().Contain(newLine);
+		text.Replace(newLine, "", StringComparison.Ordinal).Should()
+			.NotContain("\r")
+			.And.NotContain("\n");
+	}
+
+	[Fact]
 	public void Can_Write_Generic_Types()
 	{
 		// Arrange

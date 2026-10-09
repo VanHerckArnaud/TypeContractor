@@ -85,7 +85,12 @@ dotnet-config tool for viewing and changing configuration similar to how
     root = "~/api"
     generate-api-clients = true
     build-zod-schemas = true
+    line-endings = "lf" # Defaults to "crlf"
 ```
+
+Generated files always use the same line endings, regardless of the OS
+TypeContractor runs on. The default is `crlf`; set `line-endings = "lf"` (or
+pass `--line-endings lf`) to use Unix line endings instead.
 
 ## Run manually
 

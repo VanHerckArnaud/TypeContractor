@@ -53,6 +53,45 @@ public sealed class ApiClientWriterTests : IDisposable
 	}
 
 	[Fact]
+	public void Defaults_To_Crlf_Line_Endings()
+	{
+		// Arrange
+		var apiClient = new ApiClient("TestClient", "TestController", "test", null);
+		apiClient.AddEndpoint(new ApiClientEndpoint("getLatestId", "latest", EndpointMethod.GET, typeof(Guid), typeof(Guid), false, [], null));
+
+		// Act
+		var result = Sut.Write(apiClient, [], _converter, false, _templateFn, Casing.Pascal);
+
+		// Assert
+		var text = File.ReadAllText(result);
+		text.Should().Contain("\r\n");
+		text.Replace("\r\n", "", StringComparison.Ordinal).Should()
+			.NotContain("\r")
+			.And.NotContain("\n");
+	}
+
+	[Theory]
+	[InlineData(LineEndings.Crlf, "\r\n")]
+	[InlineData(LineEndings.Lf, "\n")]
+	public void Uses_Configured_Line_Endings(LineEndings lineEndings, string newLine)
+	{
+		// Arrange
+		var apiClient = new ApiClient("TestClient", "TestController", "test", null);
+		apiClient.AddEndpoint(new ApiClientEndpoint("getLatestId", "latest", EndpointMethod.GET, typeof(Guid), typeof(Guid), false, [], null));
+		var sut = new ApiClientWriter(_configuration.OutputPath, "~", lineEndings);
+
+		// Act
+		var result = sut.Write(apiClient, [], _converter, false, _templateFn, Casing.Pascal);
+
+		// Assert
+		var text = File.ReadAllText(result);
+		text.Should().Contain(newLine);
+		text.Replace(newLine, "", StringComparison.Ordinal).Should()
+			.NotContain("\r")
+			.And.NotContain("\n");
+	}
+
+	[Fact]
 	public void Strips_Trailing_Slash()
 	{
 		// Arrange
